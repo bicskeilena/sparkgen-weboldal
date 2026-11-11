@@ -1,0 +1,617 @@
+<title>SparkGen Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="SparkGen Studio: hidegemail és LinkedIn leadgenerálás alvállalkozóként. Megkeresem a döntéshozókat, az értékesítőd megkapja az érdeklődőket, vállalt számmal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a letter. One 660px reading column of running prose; a few wider inserts (thread) break out to 1040px. No eyebrows, no card grids. */
+:root{
+  --paper:#F5F7FB;
+  --surface:#FFFFFF;
+  --ink:#101B2E;
+  --muted:#5A667C;
+  --line:#D9E0EB;
+  --blue:#2447F5;       /* the one main colour */
+  --blue-ink:#FFFFFF;
+  --blue-soft:#E4EAFF;
+  --blue-light:#7F9BFF;
+  --mark-bg:#CAD6FF;
+  --band:#101B2E; --band-fg:#E8EDF6; --band-muted:#9AA7BD; --band-line:#26344C;
+  --ok:#1F9D6B;
+  --t-me:#E3EAFF; --t-you:#FCE7F1; --t-shared:#EEE7FF;
+  --font-display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --font-body:"Plus Jakarta Sans","Helvetica Neue",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --text:1.0625rem;
+  --studio:#7F9BFF;     /* logo 'studio' + sparkle, same on light and dark */
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0B1320; --surface:#131E30; --ink:#E8EDF6; --muted:#9AA7BD; --line:#24334B;
+  --blue:#5C7BFF; --blue-ink:#FFFFFF; --blue-soft:#17244A; --blue-light:#8FA8FF; --mark-bg:#2B3F8F;
+  --band:#060C16; --band-fg:#E8EDF6; --band-muted:#8D9AB1; --band-line:#1C2940; --ok:#3CC48D; --t-me:#17244A; --t-you:#3A1D2E; --t-shared:#28214A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0B1320; --surface:#131E30; --ink:#E8EDF6; --muted:#9AA7BD; --line:#24334B;
+  --blue:#5C7BFF; --blue-ink:#FFFFFF; --blue-soft:#17244A; --blue-light:#8FA8FF; --mark-bg:#2B3F8F;
+  --band:#060C16; --band-fg:#E8EDF6; --band-muted:#8D9AB1; --band-line:#1C2940; --ok:#3CC48D; --t-me:#17244A; --t-you:#3A1D2E; --t-shared:#28214A; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:var(--text);line-height:1.62;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.col,.wide{margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.col{max-width:1280px}
+.wide{max-width:1280px}
+h1,h2,h3{font-family:var(--font-display);letter-spacing:-.02em;line-height:1.1;text-wrap:balance;margin:0;font-weight:700}
+p{margin:0}
+.col p+p{margin-top:1em}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:4px}
+.mark{background:linear-gradient(transparent 60%,var(--mark-bg) 60%,var(--mark-bg) 92%,transparent 92%);padding:0 .06em}
+.muted{color:var(--muted)}
+.ui{font-family:var(--font-display);font-size:.95rem;letter-spacing:0}
+
+/* header + wordmark with flare */
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:80px;padding-top:8px}
+.logo{position:relative;display:inline-grid;text-decoration:none;color:var(--ink);font-family:var(--font-display);line-height:1;font-size:1.5rem;white-space:nowrap}
+.logo .l1{font-weight:800;letter-spacing:-.045em}
+.logo .l2{font-weight:500;letter-spacing:-.025em;font-size:.8em;margin-top:.06em;color:var(--studio)}
+.logo svg{position:absolute;left:4.126em;top:.309em;width:1em;height:1em;overflow:visible}
+.nav-mail{font-family:var(--font-display);font-weight:500;font-size:.95rem;color:var(--ink);text-decoration:none;border-bottom:1.5px solid var(--blue);padding-bottom:2px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(32px,6vw,72px);align-items:center;padding-block:clamp(16px,3vw,36px) clamp(36px,5vw,64px)}
+.hero>*{min-width:0}
+.hero h1{font-size:clamp(2.4rem,5.4vw,4.1rem);font-weight:800;letter-spacing:-.035em}
+.hero p{margin-top:24px}
+.hero .reach{margin-top:30px;font-family:var(--font-display);font-size:1.05rem}
+.hero .reach a{font-weight:700;text-decoration:none;border-bottom:2px solid var(--blue);padding-bottom:1px}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
+
+/* email thread insert */
+.thread{display:grid;gap:12px;font-family:var(--font-body);font-size:.93rem;line-height:1.5}
+.msg{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.msg .meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:.8rem;margin-bottom:6px}
+.msg .meta b{font-family:var(--font-mono);font-weight:500;font-size:.72rem}
+.msg.reply{border-color:var(--blue);background:var(--blue-soft);margin-left:28px}
+.msg.reply + .handoff{margin-left:28px}
+.handoff{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--muted);padding-left:4px}
+.handoff i{width:8px;height:8px;border-radius:50%;background:var(--ok);flex:none}
+.caption{font-size:.85rem;color:var(--muted);font-style:italic;margin-top:10px}
+
+/* chapters */
+.chapter{padding-block:clamp(28px,4vw,48px)}
+.chapter h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:16px}
+.rule{border:0;border-top:1px solid var(--line);margin:0}
+.col ul.plain{margin:1em 0 0;padding-left:1.1em}
+.col ul.plain li+li{margin-top:.4em}
+.aside{margin-top:1.6em;padding-left:18px;border-left:3px solid var(--blue);font-style:italic;color:var(--muted)}
+
+/* comparison */
+.vs{margin-top:36px;font-family:var(--font-display);font-size:.98rem;overflow-x:auto}
+.vs table{width:100%;border-collapse:collapse;min-width:520px}
+.vs th,.vs td{text-align:left;padding:14px 16px 14px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.vs thead th{font-weight:500;color:var(--muted);font-size:.85rem;border-bottom:1.5px solid var(--ink)}
+.vs thead th:last-child{color:var(--blue)}
+.vs tbody th{font-weight:600;width:30%}
+.vs td:nth-child(2){color:var(--muted)}
+.vs td:last-child{font-weight:500}
+
+/* who does what */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:30px;font-family:var(--font-display);font-size:.98rem}
+.duo>div{padding:4px 28px 4px 0;min-width:0}
+.duo>div+div{padding:4px 0 4px 28px;border-left:1px solid var(--line)}
+.duo h3{font-size:1.1rem;margin-bottom:12px}
+.duo ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.duo li{display:grid;grid-template-columns:20px 1fr;gap:8px}
+.duo li svg{margin-top:3px;color:var(--blue)}
+.duo div+div li svg{color:var(--muted)}
+@media (max-width:640px){.duo{grid-template-columns:1fr}.duo>div,.duo>div+div{padding:0;border:0}.duo>div+div{margin-top:28px}}
+
+/* schedule */
+.sched{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,56px);font-family:var(--font-display);font-size:.95rem}
+.sched>*{min-width:0}
+.sched h3{font-size:1.05rem;margin-bottom:14px}
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:grid;grid-template-columns:76px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.steps .w{font-family:var(--font-mono);font-size:.74rem;color:var(--blue);padding-top:3px}
+.steps span{color:var(--muted);display:block;font-size:.88rem}
+.days li .w{color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px}
+.d-mail{background:var(--blue)}.d-li{background:var(--blue-light);box-shadow:inset 0 0 0 1.5px var(--blue)}
+@media (max-width:820px){.sched{grid-template-columns:1fr}}
+
+/* terms strip */
+.terms{display:grid;grid-template-columns:1fr 3fr 1.7fr;margin-top:30px;font-family:var(--font-display);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+.terms>div{padding:16px 18px;min-width:0}
+.terms>div+div{border-left:1.5px solid var(--ink)}
+.terms b{display:block;font-size:1.15rem}
+.terms span{font-size:.85rem;color:var(--muted)}
+.terms .run{background:var(--blue);color:var(--blue-ink)}
+.terms .run span{color:var(--blue-ink);opacity:.85}
+.terms .extra{background:repeating-linear-gradient(135deg,transparent 0 8px,var(--blue-soft) 8px 16px)}
+@media (max-width:640px){.terms{grid-template-columns:1fr}.terms>div+div{border-left:0;border-top:1.5px solid var(--ink)}}
+
+
+/* justified running text (Hungarian hyphenation) */
+.col p,.hero .txt,.faq details p{hyphens:manual;-webkit-hyphens:manual}
+@media (min-width:640px){.col p,.hero .txt,.faq details p{text-align:justify}}
+/* process */
+.flow{list-style:none;counter-reset:f;margin:8px 0 0;padding:0}
+.flow li{counter-increment:f;display:grid;grid-template-columns:44px 1fr;column-gap:14px;padding:18px 0;border-top:1px solid var(--line)}
+.flow li::before{content:counter(f);grid-row:1/3;font-family:var(--font-display);font-weight:800;font-size:1.5rem;line-height:1.1;color:var(--blue)}
+.flow b{font-family:var(--font-display);font-size:1.12rem}
+.flow p{margin-top:4px;color:var(--muted)}
+/* tasks */
+.tasks{display:grid;gap:14px;margin:8px auto 0;width:fit-content;max-width:100%}
+.tasks>div{padding:20px 26px;border-radius:18px;min-width:0}
+.tasks h3{font-size:1.1rem;margin-bottom:10px}
+.tasks ul{margin:0;padding-left:1.15em;display:grid;gap:6px}
+.tasks .t-shared{background:var(--t-shared);display:flex;align-items:center;justify-content:space-between;gap:28px}
+.tasks .t-me{background:var(--t-me)}
+.tasks .t-you{background:var(--t-you)}
+.tasks .t-shared li::marker{color:#7B5CF0}
+.tasks .t-me li::marker{color:var(--blue)}
+.tasks .t-you li::marker{color:#D9488F}
+.art-small{width:110px;height:auto;flex:none}
+/* three conditions */
+.three{margin:22px 0 26px;padding:0;display:grid;gap:0;border-top:1.5px solid var(--ink)}
+.three div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.three dt{font-family:var(--font-display);font-weight:700;font-size:1.1rem}
+.three dd{margin:0;color:var(--muted)}
+@media (max-width:560px){.three div{grid-template-columns:1fr;gap:4px}}
+/* statement */
+.statement{margin:36px auto 0;text-align:center;font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,3.4vw,2.5rem);line-height:1.2;letter-spacing:-.02em;max-width:22em;text-wrap:balance}
+/* journey timeline */
+.journey-sec{background:var(--band);color:var(--band-fg);padding-block:clamp(44px,6vw,72px)}
+.journey-sec h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:44px}
+.journey{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,1fr);position:relative}
+.journey li{position:relative;padding:58px 22px 0 0;min-width:0}
+.journey li::before{content:"";position:absolute;left:0;right:0;top:19px;height:2px;background:var(--band-line)}
+.journey li.setup::before{background:var(--blue-light)}
+.journey li.live::before{right:-40px;background:linear-gradient(90deg,var(--blue-light),transparent)}
+.journey li[data-phase]::after{content:attr(data-phase);position:absolute;top:-30px;left:0;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--band-muted)}
+.journey .node{position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:1rem;background:var(--band);border:2px solid var(--band-line);color:var(--band-fg);z-index:1}
+.journey li.setup .node{border-color:var(--blue-light);color:var(--blue-light)}
+.journey li.live .node{background:var(--blue-light);border-color:var(--blue-light);color:#101B2E}
+.journey b{display:block;font-family:var(--font-display);font-size:1.12rem;line-height:1.25;margin-bottom:8px}
+.journey p{color:var(--band-muted);font-size:.98rem;line-height:1.55}
+@media (max-width:860px){
+  .journey{grid-template-columns:1fr}
+  .journey li{padding:0 0 30px 62px}
+  .journey li::before{left:19px;right:auto;top:0;bottom:0;width:2px;height:auto}
+  .journey li.live::before{right:auto;bottom:-30px;background:linear-gradient(180deg,var(--blue-light),transparent)}
+  .journey li[data-phase]::after{position:static;display:block;margin-bottom:6px}
+  .journey li[data-phase] b{margin-top:0}
+}
+.hero .sub-lead{margin-top:18px;font-family:var(--font-display);font-weight:600;font-size:clamp(1.15rem,1.8vw,1.4rem);line-height:1.35;color:var(--ink);text-align:left;max-width:30em}
+.hero .spark-line{margin:26px 0 0;font-family:var(--font-display);font-weight:500;font-size:clamp(1.05rem,1.6vw,1.25rem);line-height:1.35;color:var(--muted);text-align:left}
+.spark-line b{font-weight:700;color:var(--ink);white-space:nowrap}
+.spark-line svg{display:inline-block;width:1em;height:1em;margin-left:.25em;vertical-align:-.1em}
+/* hero mini graphic */
+.mini{position:relative;max-width:380px;margin-left:auto;padding-top:62px;font-family:var(--font-body)}
+.mini-back{position:absolute;left:24px;right:24px;display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:.8rem;color:var(--muted)}
+.mini-back i{font-style:normal;font-family:var(--font-mono);font-size:.7rem}
+.mini-back span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.mini-back.b2{top:0;left:44px;right:44px;opacity:.55}
+.mini-back.b1{top:30px;opacity:.85}
+.mini-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 24px 48px -28px rgba(16,27,46,.35)}
+.mini-top{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:.9rem}
+.dot-ok{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.mini-time{margin-left:auto;font-family:var(--font-mono);font-weight:400;font-size:.72rem;color:var(--muted)}
+.mini-name{margin-top:14px;font-family:var(--font-display);font-weight:700;font-size:1.15rem}
+.mini-role{color:var(--muted);font-size:.85rem}
+.mini-quote{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--blue-soft);font-size:.92rem;line-height:1.45}
+.mini-foot{margin-top:14px;font-family:var(--font-display);font-weight:600;font-size:.88rem;color:var(--blue)}
+.mini .caption{margin-top:12px}
+.hero .mini p{margin-top:0}
+.hero .mini .mini-name{margin-top:14px}.hero .mini .mini-role{margin-top:2px}.hero .mini .mini-quote{margin-top:12px}.hero .mini .caption{margin-top:12px}
+.mini-back i{flex:none}
+@media (max-width:900px){.mini{margin-left:0}}
+/* signs checklist */
+.signs{list-style:none;margin:6px 0 26px;padding:0;display:grid;gap:12px}
+.signs li{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:center;font-family:var(--font-display);font-weight:600;font-size:clamp(1.1rem,1.8vw,1.3rem);line-height:1.3}
+.signs li::before{content:"";width:22px;height:22px;border:2px solid var(--blue);border-radius:6px}
+/* inbound vs outbound */
+.io-wrap{margin-top:40px;overflow-x:auto}
+.io{min-width:620px;font-family:var(--font-body)}
+.io-row{display:grid;grid-template-columns:.8fr 1fr 1fr;border-bottom:1px solid var(--line)}
+.io-row>span{padding:16px 18px}
+.io-row>span:nth-child(3){background:var(--blue-soft);font-weight:600}
+.io-head>span{font-family:var(--font-display);font-weight:700;font-size:1.1rem;padding-block:20px 16px}
+.io-head>span:nth-child(2){color:var(--muted)}
+.io-head>span:nth-child(3){border-radius:14px 14px 0 0;color:var(--blue)}
+.io-row:last-child>span:nth-child(3){border-radius:0 0 14px 14px}
+.io-row:last-child{border-bottom:0}
+.io-head small{display:block;font-family:var(--font-body);font-weight:400;font-size:.85rem;color:var(--muted);margin-top:2px}
+.io .q{font-family:var(--font-display);font-weight:600}
+.io-row>span:nth-child(2){color:var(--muted)}
+/* pillars */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+.pill{background:var(--blue-soft);border-radius:22px;padding:28px 26px 24px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pill h3{font-size:1.45rem}
+.pill-sub{color:var(--blue);font-weight:600;margin-top:-6px}
+.pill ul{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:9px;font-size:.97rem}
+.pill li{position:relative;padding-left:20px}
+.pill li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.slip{margin-top:auto;padding-top:16px;border-top:1px dashed color-mix(in srgb,var(--blue) 40%,transparent)}
+.slip span{display:block;font-family:var(--font-mono);font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#C2410C;margin-bottom:6px}
+.slip p{font-size:.92rem;color:var(--muted);line-height:1.5}
+@media (max-width:900px){.pillars{grid-template-columns:1fr}}
+.journey-sec{overflow:hidden}
+/* section divider: hairline with a gold spark */
+.divider{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:center;gap:14px}
+.divider::before,.divider::after{content:"";height:1px;background:var(--line);flex:1}
+.divider svg{width:18px;height:18px;flex:none}
+/* joined sections: "Mi szükséges" continues "Miért dolgozz velem?" */
+.chapter.joined-top{padding-bottom:0}
+.chapter.joined{padding-top:28px}
+.chapter.joined h2{font-size:clamp(1.25rem,2.2vw,1.55rem);color:var(--blue);margin-bottom:12px}
+/* contact inside the dark footer */
+footer{padding-block:clamp(56px,8vw,88px) 40px}
+.foot-contact{padding-bottom:44px;margin-bottom:36px;border-bottom:1px solid var(--band-line)}
+.foot-contact h2{color:var(--band-fg);font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:14px}
+.foot-contact p{color:var(--band-muted);font-family:var(--font-body);font-size:1.05rem;max-width:40em}
+.foot-contact .mailbig span,.foot-contact .mailbig a#mail{color:var(--blue-light);text-decoration:none}
+.foot-contact .copy{background:transparent;color:var(--band-fg);border-color:var(--band-line)}
+.foot-contact .copy:hover{border-color:var(--band-fg)}
+/* extra services bubbles */
+.extras{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+.xcard{border-radius:24px;padding:clamp(24px,3vw,36px);display:flex;flex-direction:column;gap:14px;min-width:0}
+.xcard h3{font-size:clamp(1.3rem,2vw,1.6rem);line-height:1.2}
+.xcard p{margin:0;text-align:left!important}
+.xcard ul{margin:0;padding-left:1.15em;display:grid;gap:7px}
+.x-blue{background:#7F9BFF;color:#101B2E}
+.x-blue ul li::marker{color:#101B2E}
+.x-blue .x-why{background:rgba(255,255,255,.35);border-radius:14px;padding:14px 16px}
+.x-white{background:var(--surface);border:2px solid var(--blue)}
+.x-why-soft{background:var(--blue-soft);border-radius:14px;padding:14px 16px}
+.x-white li::marker{color:var(--blue)}
+.x-cta{margin-top:auto!important;font-family:var(--font-display);font-weight:600}
+.x-blue .x-cta a{color:#101B2E}
+.x-white .x-cta a{color:var(--blue)}
+@media (max-width:860px){.extras{grid-template-columns:1fr}}
+.x-both{text-align:center!important;margin:26px 0 0;font-family:var(--font-display);font-weight:600;font-size:1.1rem}
+.x-btn-row{display:flex;justify-content:center;margin-top:16px}
+.x-btn{display:inline-flex;align-items:center;gap:8px;padding:16px 30px;border-radius:999px;background:var(--blue);color:#fff;text-decoration:none;font-family:var(--font-display);font-weight:700;font-size:1.05rem;transition:transform .15s ease,box-shadow .15s ease}
+.x-btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px -12px var(--blue)}
+/* illustrations */
+.art-grid{display:grid;grid-template-columns:1fr 260px;gap:clamp(24px,4vw,56px);align-items:center}
+.art-grid>*{min-width:0}
+.art{width:100%;max-width:260px;height:auto;justify-self:end}
+@media (max-width:760px){.art-grid{grid-template-columns:1fr}.art{max-width:180px;justify-self:start;order:-1}.art-small{width:80px}}
+#feladatok h2{text-align:center}
+/* about */
+.about{display:grid;grid-template-columns:200px 1fr;gap:clamp(24px,5vw,44px);align-items:start}
+.about>*{min-width:0}
+.photo{aspect-ratio:4/5;max-width:100%;border-radius:12px;border:1.5px dashed var(--line);display:grid;place-items:center;text-align:center;color:var(--muted);font-family:var(--font-display);font-size:.85rem;padding:12px}
+.todo{background:var(--blue-soft);border-radius:4px;padding:0 5px;font-style:normal;font-family:var(--font-display);font-size:.9em}
+.sig{margin-top:1.4em;font-style:italic}
+@media (max-width:640px){.about{grid-template-columns:1fr}.photo{max-width:180px}}
+
+/* faq */
+.faq{margin-top:8px;font-family:var(--font-display)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;padding:18px 36px 18px 0;font-weight:600;font-size:1.05rem;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:14px;font-size:1.4rem;font-weight:400;color:var(--muted);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 0 20px;color:var(--muted);font-family:var(--font-body);font-size:1.08rem}
+
+/* contact */
+.contact{padding-block:clamp(56px,8vw,100px)}
+.contact h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin-bottom:22px}
+.mailbig{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
+.mailbig span,.mailbig a#mail{text-decoration:none;font-family:var(--font-display);font-weight:800;font-size:clamp(1.8rem,5vw,3rem);letter-spacing:-.03em;color:var(--blue);word-break:break-all}
+.copy{font:500 .85rem/1 var(--font-display);padding:.65em 1em;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.copy:hover{border-color:var(--ink)}
+.li-link{display:inline-block;margin-top:14px;font-family:var(--font-display)}
+.flag{margin-top:18px;font-family:var(--font-display);font-size:.8rem;color:var(--muted)}
+
+footer{background:var(--band);padding-block:44px;font-family:var(--font-display);font-size:.85rem;color:var(--band-muted)}
+footer .logo{color:var(--band-fg);margin-bottom:22px}
+
+footer .row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer ul{list-style:none;margin:0;padding:0;display:flex;gap:18px;flex-wrap:wrap}
+footer a{color:var(--band-fg)}
+footer .small{margin-top:20px;max-width:70ch;font-size:.8rem}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <linearGradient id="sg-grad" x1="0" y1="-60" x2="50" y2="10" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FBDF5A"/><stop offset=".55" stop-color="#E9AE35"/><stop offset="1" stop-color="#C97A22"/></linearGradient>
+  <linearGradient id="sg-gold1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBDF5A"/><stop offset=".55" stop-color="#E9AE35"/><stop offset="1" stop-color="#C97A22"/></linearGradient>
+  <symbol id="star1" viewBox="-12 -12 24 24" overflow="visible"><path d="M0,-11 Q1.4,-1.4 7.5,0 Q1.4,1.4 0,11 Q-1.4,1.4 -7.5,0 Q-1.4,-1.4 0,-11Z" fill="url(#sg-gold1)"/></symbol>
+  <symbol id="sparkle" viewBox="0 0 80 80" overflow="visible"><path d="M16,-52 Q18.80,-24.80 36,-22 Q18.80,-19.20 16,8 Q13.20,-19.20 -4,-22 Q13.20,-24.80 16,-52ZM38,-56 Q39.19,-45.19 46.5,-44 Q39.19,-42.81 38,-32 Q36.81,-42.81 29.5,-44 Q36.81,-45.19 38,-56ZM44,-27.5 Q44.91,-18.91 50.5,-18 Q44.91,-17.09 44,-8.5 Q43.09,-17.09 37.5,-18 Q43.09,-18.91 44,-27.5Z" fill="url(#sg-grad)"/></symbol>
+  <symbol id="check" viewBox="0 0 20 20"><path d="M4.5 10.5l3.6 3.6L15.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="site">
+  <div class="wide nav">
+    <a class="logo" href="#top" aria-label="SparkGen Studio"><span class="l1">sparkgen</span><span class="l2">studio</span><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#sparkle"/></svg></a>
+    <a class="nav-mail" href="#irj">info@sparkgen.hu</a>
+  </div>
+</header>
+
+<main id="top" lang="hu">
+  <div class="wide hero">
+    <div>
+      <h1>Leadgenerálás B2B cégeknek, <span class="mark">garanciával.</span></h1>
+      <p class="sub-lead">Hideg piacból érdeklődők, a te értékesítődnek. A célzástól az átadásig mindent én viszek.</p>
+      <p class="txt">Sziasztok! Léna vagyok, és szabadúszóként cégeknek segítek növekedni. Alvállalkozóként felépítem és viszem a teljes leadgenerálási folyamatot több platformon. Az érdeklődőket egyből átadom, így az értékesítőnek már csak a saját feladatára, a tárgyalásra és a zárásra kell fókuszálnia.</p>
+      <p class="txt">Az érdeklődők számára garanciát vállalok, de pont ezért nem dolgozom mindenkivel. Megnézem a cégeteket, a célcsoportot és csak ezután adok ajánlatot.</p>
+      <p class="spark-line">Van egy jó terméked, de döcög az értékesítés? <b>Adjunk neki szikrát.<svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0,-11 Q1.4,-1.4 7.5,0 Q1.4,1.4 0,11 Q-1.4,1.4 -7.5,0 Q-1.4,-1.4 0,-11Z" fill="url(#sg-gold1)"/></svg></b></p>
+      <p class="reach">Érdekes lehet? Írj az <a href="#irj">info@sparkgen.hu</a> email címre és 48 órán belül válaszolok.</p>
+    </div>
+    <div>
+      <div class="mini" aria-label="Példa: egy beérkező érdeklődő átadása">
+        <div class="mini-back b2"><span>LinkedIn-üzenet</span><i>9. nap</i></div>
+        <div class="mini-back b1"><span>Email: tender utáni kapacitás</span><i>2. nap</i></div>
+        <div class="mini-card">
+          <div class="mini-top"><span class="dot-ok" aria-hidden="true"></span>Új érdeklődő<span class="mini-time">ma, 10:42</span></div>
+          <p class="mini-name">Példa Péter</p>
+          <p class="mini-role">ügyvezető · gyártó cég, 120 fő</p>
+          <p class="mini-quote">„Igen, ez most pont téma nálunk, szeretném hallani a részleteket. Telefonszámom az aláírásomban.”</p>
+          <div class="mini-foot">Átadva az értékesítődnek →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <section class="chapter" id="jelek">
+    <div class="col art-grid">
+      <div class="art-text">
+      <h2>Honnan tudod, hogy hiányzik nálatok a direkt sales rendszer?</h2>
+      <ul class="signs">
+        <li>Új ügyfelek csak ajánlásból jönnek</li>
+        <li>A sales csapat csak a marketingből bejövő leadeken dolgozik</li>
+        <li>Nem tudjátok előre, mennyi érdeklődő lesz a következő hónapban</li>
+      </ul>
+      <p>Ha legalább egyre rábólintottál, hiányzik egy csatorna, amit ti irányítotok. Nem kell lemondanod a bejövő érdeklődőkről, az outbound mellettük ad egy olyat, amit te indítasz el, és amit hétről hétre mérni lehet.</p>
+      </div>
+      <img class="art" src="img/celtabla.webp" alt="Céltábla, középen a nyíllal" width="440" loading="lazy">
+    </div>
+    <div class="wide io-wrap">
+      <div class="io" role="table" aria-label="Bejövő és kimenő ügyfélszerzés összehasonlítása">
+        <div class="io-row io-head" role="row"><span role="columnheader"></span><span role="columnheader">Bejövő (inbound)<small>aki megtalál téged</small></span><span role="columnheader">Kimenő (outbound)<small>akit te választasz</small></span></div>
+        <div class="io-row" role="row"><span class="q" role="rowheader">Ki lép először?</span><span role="cell">Az ügyfél, ha épp keres</span><span role="cell">Te, amikor neked megfelel</span></div>
+        <div class="io-row" role="row"><span class="q" role="rowheader">Kiket érsz el?</span><span role="cell">Csak azokat, akik most aktívan keresnek</span><span role="cell">A teljes célpiacot, azokat is, akik még nem keresnek</span></div>
+        <div class="io-row" role="row"><span class="q" role="rowheader">Mennyire tervezhető?</span><span role="cell">Hullámzik a szezonnal, a hirdetési kerettel és a Google-helyezéssel</span><span role="cell">Hétről hétre mérhető, és a volumennel skálázható</span></div>
+        <div class="io-row" role="row"><span class="q" role="rowheader">Ki választ kit?</span><span role="cell">Ő választ téged</span><span role="cell">Te döntöd el, kivel szeretnél dolgozni</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><svg viewBox="-12 -12 24 24"><path d="M0,-11 Q1.4,-1.4 7.5,0 Q1.4,1.4 0,11 Q-1.4,1.4 -7.5,0 Q-1.4,-1.4 0,-11Z" fill="url(#sg-gold1)"/></svg></div>
+
+  <section class="chapter joined-top" id="miert">
+    <div class="col">
+      <h2>Miért <span class="mark">dolgozz velem?</span></h2>
+      <p>Azért léptem erre a pályára, mert újra és újra ugyanazt a problémát láttam a piacon. Van egy kiváló értékesítő, aki nagyszerűen tárgyal, de az új ügyfelek csak ajánlásból jönnek, a szabad ideje nagy része pedig elmegy adatbázisok építésével és kapcsolatfelvétellel.</p>
+      <p>Ezt a terhet veszem le a vállatokról. Nem az értékesítést veszem át tőletek, hanem folyamatos megkereséseket és érdemi érdeklődőket biztosítok a csapatodnak. Szakértelmemmel és egy bevált infrastruktúrával építek működő kampányokat, amik érdeklődőket hoznak neked.</p>
+    </div>
+  </section>
+  <section class="chapter joined" id="kampany">
+    <div class="col">
+      <h2>Mi szükséges egy jó kampányhoz?</h2>
+      <p>Egy jó kampányhoz három dolognak kell egyszerre teljesülnie. Ha egy is hiányzik, a másik kettő sem ér sokat. Ebben a háromban van tapasztalatom:</p>
+    </div>
+    <div class="wide">
+      <div class="pillars">
+        <article class="pill">
+          <h3>Célzás</h3>
+          <p class="pill-sub">Azok a cégek, akiknek most aktuális lehet az ajánlatod</p>
+          <ul>
+            <li>Cégek kiválasztása méret, iparág és aktuális jelek alapján: új pozíció, növekedés, új telephely, szabályozásváltozás</li>
+            <li>A döntéshozó megtalálása</li>
+            <li>Minden email-cím ellenőrzése küldés előtt</li>
+          </ul>
+          <div class="slip"><span>Hol csúszik el</span><p>Megvett vagy régi lista, info@ és titkarsag@ címek, rég távozott kollégák, rossz pozíciók. A levelek egy része oda sem ér, a többi rossz embernél landol.</p></div>
+        </article>
+        <article class="pill">
+          <h3>Infrastruktúra</h3>
+          <p class="pill-sub">A levél a beérkezők közé érjen, ne a spambe</p>
+          <ul>
+            <li>Külön küldő domainek, így a fő domained hírnevét nem kockáztatjuk</li>
+            <li>Bemelegítés, napi küldési limit, fiókok rotálása</li>
+            <li>Visszapattanások és feketelisták folyamatos figyelése</li>
+          </ul>
+          <div class="slip"><span>Hol csúszik el</span><p>Egy domain, egy postafiók, napi több száz ellenőrizetlen levél. Pár hét után minden a spamben landol, és a céges domain is megsínyli.</p></div>
+        </article>
+        <article class="pill">
+          <h3>Szövegírás</h3>
+          <p class="pill-sub">Az iparág és a pozíció nyelvén</p>
+          <ul>
+            <li>Rövid bemutatkozás, ami a címzett cégének egy valós problémájára épít</li>
+            <li>Külön változat iparáganként és pozíciónként</li>
+            <li>Rövid, kíváncsiságot keltő levél, nem azonnali árajánlat</li>
+            <li>Megfelelő CTA: egy egyszerű, könnyen teljesíthető kérés vagy kérdés a levél végén</li>
+          </ul>
+          <div class="slip"><span>Hol csúszik el</span><p>Tömeglevél-érzet: „Tisztelt Hölgyem/Uram, szeretnénk bemutatni szolgáltatásainkat…” Két másodperc, és törölve.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><svg viewBox="-12 -12 24 24"><path d="M0,-11 Q1.4,-1.4 7.5,0 Q1.4,1.4 0,11 Q-1.4,1.4 -7.5,0 Q-1.4,-1.4 0,-11Z" fill="url(#sg-gold1)"/></svg></div>
+
+  <section class="chapter joined-top" id="kiszervezes">
+    <div class="col">
+      <h2>Miért érdemes nekem kiszervezni?</h2>
+      <p>Nem ügynökségi struktúrában dolgozom, ahol a feladatok kézről kézre járnak a munkatársak között. Közvetlenül velem egyeztetsz, én építem az adatbázist, én írom a megkereséseket, és én szűröm a válaszokat is. Ha bármin változtatni szeretnél, 24 órán belül reagálok, a beérkező érdeklődőket pedig továbbítom.</p>
+      <p>Több éves tapasztalattal rendelkezem a leadgenerálásban, ügynökségi és saját partnerek oldalán is. Így neked nem kell próbálkoznod a megfelelő irány megtalálásával és a saját rendszered felépítésével, hanem én biztosítok mindent, ami a folyamathoz kell.</p>
+    </div>
+  </section>
+
+
+  <section class="chapter joined" id="feladatok">
+    <div class="col">
+      <h2>A feladatok megosztása</h2>
+      <div class="tasks">
+        <div class="t-shared">
+          <div>
+            <h3>Amit közösen csinálunk</h3>
+            <ul>
+              <li>A célcsoport finomhangolása és véglegesítése</li>
+              <li>Domain és küldő név kiválasztása</li>
+              <li>Ajánlat finomítása</li>
+            </ul>
+          </div>
+          <img class="art-small" src="img/kozos.webp" alt="Pacsi: két kéz összecsap" width="440" loading="lazy">
+        </div>
+        <div class="t-me">
+          <h3>Amit én vállalok</h3>
+          <ul>
+            <li>Az infrastruktúra beállítása, karbantartása és folyamatos ellenőrzése</li>
+            <li>Külön küldő domainek megvásárlása, beállítása és bemelegítése</li>
+            <li>Naprakész céglista összeállítása a releváns döntéshozókkal és ellenőrzött elérhetőségekkel</li>
+            <li>Személyre szabott megkeresések megírása</li>
+            <li>A beérkező válaszok kezelése, előszűrése és adminisztrációja</li>
+            <li>A kész érdeklődők átadása közvetlenül a CRM-rendszeredbe vagy emailben</li>
+          </ul>
+        </div>
+        <div class="t-you">
+          <h3>Amit ti csináltok</h3>
+          <ul>
+            <li>Az elején jóváhagyjátok a célcsoportot és a megszólításokat</li>
+            <li>Gyorsan felveszitek a kapcsolatot az átadott érdeklődőkkel</li>
+            <li>Visszajelzést adtok a folyamat és a leadek minősége kapcsán</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="wide">
+      <p class="statement">Nektek csak <span class="mark">az érdeklődőkkel</span> kell foglalkoznotok. Minden mással én foglalkozom.</p>
+    </div>
+  </section>
+
+  <section class="journey-sec" id="folyamat">
+    <div class="wide">
+      <h2>Így dolgozunk együtt</h2>
+      <ol class="journey">
+        <li data-phase="Bemutatkozás">
+          <span class="node">1</span>
+          <b>Online bemutatkozó meeting</b>
+          <p>Átbeszéljük az ajánlatodat, a jelenlegi értékesítési folyamataitokat és a céljaitokat</p>
+        </li>
+        <li>
+          <span class="node">2</span>
+          <b>Rád szabott ajánlat</b>
+          <p>Kiszámolom a piacodban rejlő lehetőségeket, és elküldöm a pontos vállalásokat</p>
+        </li>
+        <li>
+          <span class="node">3</span>
+          <b>Szerződéskötés</b>
+          <p>Amennyiben szimpatikus a munkamódszerem és az ajánlat, rögzítjük a garanciát és az együttműködés kereteit</p>
+        </li>
+        <li>
+          <span class="node">4</span>
+          <b>Onboarding</b>
+          <p>Szerződéskötés után egyből küldök egy rövid kérdőívet, és még egyszer átbeszéljük a teljes képet. Ezután azonnal indul az előkészítés</p>
+        </li>
+        <li class="setup" data-phase="2 hét">
+          <span class="node">5</span>
+          <b>Setup időszak</b>
+          <p>Felépítem a technikai infrastruktúrát, az adatbázist, és előkészítem a szövegezést</p>
+        </li>
+        <li class="live" data-phase="Folyamatos">
+          <span class="node">6</span>
+          <b>Aktív leadgenerálás</b>
+          <p>Elindul a kampány, az 1. héten beérkeznek az első válaszok, utána szállítom az ellenőrzött érdeklődőket, és monitorozom a kampányokat</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="chapter" id="extra">
+    <div class="col">
+      <h2>Ennél többre van szükséged?</h2>
+      <div class="extras">
+        <article class="xcard x-blue">
+          <h3>LinkedIn-megkeresések az emailek mellé</h3>
+          <p>Kiegészítenéd az emaileket <b>LinkedIn-megkeresésekkel?</b> Ezt is vállalom. Ugyanazokat a döntéshozókat keresem meg, a ti profilotokról: megírom az üzeneteket, és a válaszokat is én kezelem.</p>
+          <ul>
+            <li>Kapcsolódási kérések és üzenetek a ti profilotokról</li>
+            <li>Személyre szabott, nem sablonos szövegek</li>
+            <li>Utókezelés: válaszok szűrése és átadása</li>
+          </ul>
+          <p class="x-why"><b>Miért működik a LinkedIn?</b> Sokkal személyesebb, ezért akár 10x nagyobb lehet a válaszadási arány.</p>
+        </article>
+        <article class="xcard x-white">
+          <h3>Konkrét cégeket keresnél meg?</h3>
+          <p>Az sem akadály! Mondd meg, melyik cégekhez szeretnél eljutni, és milyen döntéshozókhoz. Én elkészítem a listát, és személyre szabott szöveggel keresem meg őket.</p>
+          <ul>
+            <li>Te adod meg a cégeket és a pozíciókat</li>
+            <li>Én megkeresem a döntéshozókat és az elérhetőségeiket</li>
+            <li>Minden levél az adott cégre szabva készül</li>
+          </ul>
+          <p class="x-why x-why-soft"><b>Célzott cégmegkeresés:</b> erre külön ajánlatot egyeztetünk! A célzott megkeresések rendre nagy sikert érnek el.</p>
+        </article>
+      </div>
+      <p class="x-both">A három egyszerre is mehet.</p>
+      <div class="x-btn-row"><a class="x-btn" href="#irj">Kérj rá egyedi ajánlatot →</a></div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><svg viewBox="-12 -12 24 24"><path d="M0,-11 Q1.4,-1.4 7.5,0 Q1.4,1.4 0,11 Q-1.4,1.4 -7.5,0 Q-1.4,-1.4 0,-11Z" fill="url(#sg-gold1)"/></svg></div>
+
+  <section class="chapter" id="kinek">
+    <div class="col art-grid">
+      <div class="art-text">
+      <h2>Kinek tudok <span class="mark">segíteni?</span></h2>
+      <p>Érdemes előre tisztázni, hogy ez a szolgáltatás nem való minden vállalkozásnak. Akkor tudunk hatékonyan együtt dolgozni, ha B2B szektorban értékesítesz, van felkészült értékesítőd a megkeresések fogadására, az ajánlatod tisztán kommunikálható, és a lehetséges ügyfélköröd legalább néhány száz cégből áll.</p>
+      </div>
+      <img class="art" src="img/kinek.webp" alt="Összeillő puzzle-darabok pipával" width="440" loading="lazy">
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><svg viewBox="-12 -12 24 24"><path d="M0,-11 Q1.4,-1.4 7.5,0 Q1.4,1.4 0,11 Q-1.4,1.4 -7.5,0 Q-1.4,-1.4 0,-11Z" fill="url(#sg-gold1)"/></svg></div>
+
+  <section class="chapter" id="gyik">
+    <div class="col">
+      <h2>Gyakran ismételt kérdések</h2>
+      <div class="faq">
+        <details><summary>Miben más ez, mint egy ügynökség?</summary><p>Nincs account manager, szövegíró és kampánymenedzser külön-külön. Mindent én csinálok, ezért nem kell három embernek elmagyaráznod ugyanazt, és ez az árképzésben is megmutatkozik.</p></details>
+        <details><summary>Csak magyar célcsoportra csinálsz kampányt?</summary><p>Nem. Külföldi piacon is ugyanezzel a módszerrel dolgozom, csak a szövegek a célpiac nyelvén készülnek.</p></details>
+        <details><summary>Mennyibe kerül?</summary><p>Egyszeri setup díj és havidíj. Az összeg a célpiac méretétől és a kampányok számától függ, ezért a bemutatkozó meeting után küldök rád szabott ajánlatot, írásban.</p></details>
+        <details><summary>Mit jelent pontosan a garancia?</summary><p>Megmondom, hány érdeklődőt vállalok a megállapodott időre, és ezt leírjuk a szerződésben. Ha az idő végére nincs meg, nem áll le a munka: folytatom, amíg a vállalt szám össze nem jön.</p></details>
+        <details><summary>Meddig tart egy együttműködés?</summary><p>Rugalmas keretek között dolgozunk, a garanciális vállalás teljesítéséig vagy a megbeszélt kampányidőszak végéig.</p></details>
+        <details><summary>Mennyi idő, mire jönnek az első válaszok?</summary><p>A setup két hét, ezalatt bemelegítem a küldő fiókokat, és jóváhagyjátok a szövegeket. Az első levelek a 3. héten mennek ki, az első válaszok általában néhány napon belül jönnek.</p></details>
+        <details><summary>Kinek a nevében mennek ki a levelek?</summary><p>A tiétekben, de külön erre a célra létrehozott domainekről és fiókokról, így a fő domainetek hírnevét nem kockáztatjuk. A domaint és a küldő nevet közösen választjuk ki.</p></details>
+        <details><summary>Használsz mesterséges intelligenciát a folyamatban?</summary><p>Használok mesterséges intelligenciát ott, ahol az a gyorsítást szolgálja, így cégkutatásra, adattisztításra és a válaszok rendezésére. A megkereséseket viszont én írom magam. Egy döntéshozó két mondat után azonnal érzi, ha egy gép írta a szöveget, és onnantól nem olvassa tovább.</p></details>
+        <details><summary>Szabad cégeket közvetlenül megkeresni?</summary><p>A megkeresések minden esetben a hatályos adatvédelmi és jogi előírások szigorú betartásával történnek. Kizárólag cégek döntéshozóit keressük meg releváns, üzleti és szakmai témákban. Aki jelzi, hogy nem kér több megkeresést, annak minden adatát azonnal töröljük.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wide">
+    <div class="foot-contact" id="irj">
+      <h2>Lépjünk kapcsolatba</h2>
+      <p>Ha szeretnéd megtudni, hány új érdeklődőt tudnék hozni a cégednek, keress bizalommal.</p>
+      <div class="mailbig"><a id="mail" href="#irj">info@sparkgen.hu</a><button class="copy" type="button" data-copy="mail">Másolás</button></div>
+    </div>
+    <a class="logo" href="#top" aria-label="SparkGen Studio"><span class="l1">sparkgen</span><span class="l2">studio</span><svg viewBox="0 0 80 80" aria-hidden="true"><use href="#sparkle"/></svg></a>
+    <div class="row">
+      <span>SparkGen Studio · sparkgen.hu · info@sparkgen.hu</span>
+      <ul><li><a href="https://sparkgen.hu/impresszum">Impresszum</a></li><li><a href="https://sparkgen.hu/adatkezeles">Adatkezelés</a></li><li><a href="https://sparkgen.hu/adatkezeles#megkeresesek">Tájékoztató az üzleti megkeresésekről</a></li></ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.getElementById(btn.dataset.copy);
+      function ok(){btn.textContent='Kimásolva';setTimeout(function(){btn.textContent='Másolás'},1600)}
+      function sel(){var s=getSelection(),rg=document.createRange();rg.selectNodeContents(el);s.removeAllRanges();s.addRange(rg);btn.textContent='Kijelölve'}
+      try{navigator.clipboard.writeText(el.textContent).then(ok,sel)}catch(e){sel()}
+    });
+  });
+})();
+</script>

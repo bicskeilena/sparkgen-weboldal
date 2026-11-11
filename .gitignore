@@ -1,0 +1,7 @@
+.DS_Store
+.claude/
+deploy/
+deploy-gh/
+*.zip
+index-v*-backup.html
+build_gh.py

@@ -1,0 +1,46 @@
+<title>SparkGen szövegbetűk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Onest:wght@400;700&family=Figtree:wght@400;700&family=Albert+Sans:wght@400;700&family=Urbanist:wght@400;700&family=Outfit:wght@400;700&family=Red+Hat+Display:wght@400;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: specimen sheet. Each font gets the same real paragraph, justified with Hungarian hyphenation, at site size. */
+:root{--paper:#F5F7FB;--tile:#FFFFFF;--ink:#101B2E;--muted:#5A667C;--line:#D9E0EB;--blue:#2447F5;--mono:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0B1320;--tile:#131E30;--ink:#E8EDF6;--muted:#9AA7BD;--line:#24334B;--blue:#5C7BFF;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#0B1320;--tile:#131E30;--ink:#E8EDF6;--muted:#9AA7BD;--line:#24334B;--blue:#5C7BFF;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);margin:0;font-family:Manrope,system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-block:36px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.6rem;letter-spacing:-.02em;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 26px;max-width:66ch;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.tile{background:var(--tile);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:12px;align-content:start;min-width:0}
+.tile h2{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:-.02em;margin:0}
+.tile p{margin:0;font-size:1.0625rem;line-height:1.62;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.tile .bold{font-weight:700}
+.meta{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:.74rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+.meta b{color:var(--blue);font-weight:400}
+</style>
+
+<div class="wrap" lang="hu">
+  <h1>Szövegbetűk a SparkGen oldalhoz</h1>
+  <p class="sub">A Manrope és hozzá hasonló, nyitott, geometrikus groteszk betűk egymás mellett. Mindegyiknél ugyanaz a bekezdés szerepel az oldalról, sorkizártan, magyar elválasztással, abban a méretben, ahogy az oldalon is megjelenne. A címek maradnak Bricolage. Mondd meg a számát annak, ami tetszik.</p>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+var F=[
+ ["Manrope","most ez van az oldalon"],
+ ["Plus Jakarta Sans","kicsit melegebb, kerekebb"],
+ ["Onest","semleges, nagyon olvasható"],
+ ["Figtree","barátságos, könnyed"],
+ ["Albert Sans","skandináv, letisztult"],
+ ["Urbanist","geometrikus, elegánsabb"],
+ ["Outfit","geometrikus, puhább"],
+ ["Red Hat Display","az előző, összehasonlításnak"]
+];
+var T="Nem ügynökségi struktúrában dolgozom, ahol a feladatok kézről kézre járnak a munkatársak között. Közvetlenül velem egyeztetsz, én építem az adatbázist, én írom a megkereséseket, és én szűröm a válaszokat is. Ha bármin változtatni szeretnél, 24 órán belül reagálok, a beérkező érdeklődőket pedig azonnal továbbítom.";
+document.getElementById('grid').innerHTML=F.map(function(f,i){
+  return '<div class="tile" style="font-family:\''+f[0]+'\',system-ui,sans-serif"><h2>Miért velem dolgozz?</h2><p>'+T+'</p><p class="bold">Rugalmas keretek között dolgozunk, a garanciális vállalás teljesítéséig.</p><div class="meta"><span><b>'+(i+1)+'.</b> '+f[0]+'</span><span>'+f[1]+'</span></div></div>';
+}).join('');
+</script>
